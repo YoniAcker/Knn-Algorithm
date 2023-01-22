@@ -7,11 +7,12 @@
 #include <fstream>
 #include <iostream>
 
+DB::DB() = default;
 /**
  * The constructor of DB. He get the name of the file that provided by the user,
    and build the database from the data that written in it.
  * @param file String.
-*/
+
 DB::DB(const string& file) {
     string line;
     fstream readStream(file, ios::in);
@@ -22,8 +23,8 @@ DB::DB(const string& file) {
     }
     // Read the file line by line.
     while (getline(readStream, line)) {
-        /* Check if the line written correctly and can be converted to vector,
-           and if it is put the vector in the database. */
+         Check if the line written correctly and can be converted to vector,
+           and if it is put the vector in the database.
         Neighbor* newNeighbor = InputManager::neighborCheck(line);
         if (!vectorSize) {
             vectorSize = newNeighbor->getInfo().size();
@@ -35,7 +36,11 @@ DB::DB(const string& file) {
     }
     readStream.close();
 }
+*/
 
+void DB::uploadData(const string &file) {
+
+}
 /**
  * Returns a read-only copy of the information.
  * @return const vector<Neighbor*>&.
@@ -63,7 +68,7 @@ DB::~DB() {
  * @param input vector<double>.
  * @param distanceFunc char*.
 */
-void DB::updateDistance(const vector<double>& input, char* distanceFunc) {
+void DB::updateDistance(const vector<double>& input, string& distanceFunc) {
     // If the info vector not in the same size as the data vector - throw exception.
     if (input.size() != vectorSize) {
         throw invalid_argument("invalid input");
@@ -71,13 +76,8 @@ void DB::updateDistance(const vector<double>& input, char* distanceFunc) {
     for (Neighbor *neighbor: neighbors) {
         // Calculate the distance.
         double newDis;
-        try {
-            newDis = DistanceFuncManager::distanceCalc(distanceFunc,
-                                                       input, neighbor->getInfo());
-        }
-        catch(invalid_argument& ia) {
-            throw invalid_argument("invalid input");
-        }
+        newDis = DistanceFuncManager::distanceCalc(distanceFunc,
+                                                   input, neighbor->getInfo());
         // Update the neighbor.
         neighbor->setDistance(newDis);
     }

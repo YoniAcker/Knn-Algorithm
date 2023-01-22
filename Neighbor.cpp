@@ -40,6 +40,9 @@ double Neighbor::getDistance() {
     return disFromInput;
 }
 
+void Neighbor::setTypeName(string& name) {
+    typeName = name;
+}
 /**
  * Set the disFromInput field to the given distance.
  * @param newDis double.

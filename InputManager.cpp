@@ -8,7 +8,6 @@
 #include <stdexcept>
 #include <iostream>
 #include <vector>
-#include <sstream>
 
 /**
  * This function gets line of input and check if it can be converted to a neighbor. if

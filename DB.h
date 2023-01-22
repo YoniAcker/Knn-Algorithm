@@ -19,10 +19,11 @@ private:
     // The size of all the vectors in the database.
     unsigned int vectorSize = 0;
 public:
-    explicit DB(const string& file);
+    DB();
     ~DB();
+    void uploadData(const string& file);
     vector<Neighbor*>& getNeighbors();
-    void updateDistance(const vector<double>& input, char* distanceFunc);
+    void updateDistance(const vector<double>& input, string& distanceFunc);
 };
 
 

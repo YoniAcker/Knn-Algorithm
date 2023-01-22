@@ -6,12 +6,30 @@
 #include <map>
 using namespace std;
 
-/**
- * The constructor of AlgorithmKnn. He get pointer to database of classified vectors.
- * @param db pointer to database.
-*/
-AlgorithmKnn::AlgorithmKnn(DB* db) {
-    this->db = db;
+AlgorithmKnn::AlgorithmKnn() = default;
+
+DB *AlgorithmKnn::getTrain() {
+    return &train;
+}
+
+DB *AlgorithmKnn::getTest() {
+    return &test;
+}
+
+int  AlgorithmKnn::getK() {
+    return K;
+}
+
+string AlgorithmKnn::getDistanceFunc() {
+    return distanceFunc;
+}
+
+void AlgorithmKnn::setK(int k) {
+    this->K = k;
+}
+
+void AlgorithmKnn::setDistanceFunc(string& distanceFunct) {
+    distanceFunc = distanceFunct;
 }
 
 /**
@@ -47,7 +65,7 @@ string getClassification(const vector<Neighbor*>& closeNeigh) {
     // Find which classification appears the most times.
     string classification;
     int mostAppearances = -1;
-    for (auto i: classifications) {
+    for (auto& i: classifications) {
         if (mostAppearances < i.second) {
             classification = i.first;
             mostAppearances = i.second;
@@ -65,18 +83,22 @@ string getClassification(const vector<Neighbor*>& closeNeigh) {
  * @param distanceFunc key to distance function.
  * @return the classification of the vector.
 */
-string AlgorithmKnn::vectorClassification(const vector<double>& input,
-                                          char* distanceFunct, int k) {
-    this->K = k;
-    this->distanceFunc = distanceFunct;
+string AlgorithmKnn::vectorClassification(const vector<double>& input) {
     try {
-        db->updateDistance(input, distanceFunc);
+        train.updateDistance(input, distanceFunc);
     }
     catch(invalid_argument& ia) {
         throw invalid_argument("invalid input");
     }
-    sort(db->getNeighbors().begin(), db->getNeighbors().end(), compNeighbor);
-    return getClassification({db->getNeighbors().begin(),
-                              db->getNeighbors().begin() + K});
+    sort(train.getNeighbors().begin(), train.getNeighbors().end(), compNeighbor);
+    return getClassification({train.getNeighbors().begin(),
+                              train.getNeighbors().begin() + K});
+}
+
+void AlgorithmKnn::classify() {
+    for (auto itr : test.getNeighbors()) {
+        string cla = vectorClassification(itr->getInfo());
+        itr->setTypeName(cla);
+    }
 }
 

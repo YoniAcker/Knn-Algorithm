@@ -10,7 +10,7 @@ using namespace std;
 */
 class DistanceFuncManager {
 public:
-    static double distanceCalc(char* funcKey, const vector<double>& first,
+    static double distanceCalc(string& funcKey, const vector<double>& first,
                         const vector<double>& second);
 };
 
