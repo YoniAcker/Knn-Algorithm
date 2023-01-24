@@ -15,7 +15,7 @@ using namespace std;
 class InputManager {
 public:
     static Neighbor* neighborCheck(const string& line);
-    static vector<double> vectorCheck(char* line, char* distanceFunc, int* k);
+    static vector<double> vectorCheck(const string& line);
 };
 
 

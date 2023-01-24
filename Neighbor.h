@@ -18,6 +18,7 @@ private:
 public:
     Neighbor(const vector<double>& info, const string& typeName);
     const vector<double>& getInfo();
+    void setTypeName(string& name);
     string getTypeName();
     void setDistance(double newDis);
     double getDistance();

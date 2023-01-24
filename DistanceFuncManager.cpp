@@ -3,7 +3,6 @@
 #include <cstdlib>
 #include <cmath>
 #include <cstring>
-#include <iostream>
 using namespace std;
 const int MINKOWSKI_P = 2;
 
@@ -98,20 +97,18 @@ double canberra(vector<double> first, vector<double> second) {
  * @param second the second vector.
  * @return the distance between the two vectors.
  */
-double DistanceFuncManager::distanceCalc(char *funcKey, const vector<double> &first,
+double DistanceFuncManager::distanceCalc(string& funcKey, const vector<double> &first,
                                          const vector<double>& second) {
-     if (!strcmp(funcKey, "AUC")) {
+     if (!strcmp(funcKey.data(), "AUC")) {
          return euclidean(first, second);
-     } else if (!strcmp(funcKey, "MAN")) {
+     } else if (!strcmp(funcKey.data(), "MAN")) {
          return manhattan(first, second);
-     } else if (!strcmp(funcKey, "CHB")) {
+     } else if (!strcmp(funcKey.data(), "CHB")) {
          return chebyshev(first, second);
-     } else if (!strcmp(funcKey, "CAN")) {
+     } else if (!strcmp(funcKey.data(), "CAN")) {
          return canberra(first, second);
-     } else if (!strcmp(funcKey, "MIN")) {
-         return minkowski(first, second);
-     } else {
-         throw invalid_argument("invalid input");
      }
+     return minkowski(first, second);
+
  }
 

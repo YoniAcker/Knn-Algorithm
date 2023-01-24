@@ -14,16 +14,23 @@
  * This class represents the KNN algorithm. We will use him to classify vectors.
 */
 class AlgorithmKnn {
-    DB* db;
+    DB train;
+    DB test;
     /* The user gives us the number K, which means -
        we need to perform the calculation based on
        the K members closest to the vector. */
-    int K = 0;
-    char* distanceFunc = nullptr;
+    int K = 5;
+    string distanceFunc = "AUC";
+    string vectorClassification(const vector<double>& input);
 public:
-    explicit AlgorithmKnn(DB* db);
-    string vectorClassification(const vector<double>& input,
-                                char* distanceFunct, int k);
+    AlgorithmKnn();
+    DB* getTrain();
+    DB* getTest();
+    int getK();
+    string getDistanceFunc();
+    void setK(int k);
+    void setDistanceFunc(string& distanceFunct);
+    void classify();
 };
 
 
