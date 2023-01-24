@@ -7,6 +7,9 @@
 #include "Command.h"
 #include "AlgorithmKnn.h"
 
+/**
+ * This class represents command 1 - to upload the dbs from the client's computer.
+*/
 class Update: public Command {
 public:
     explicit Update(DefaultIO* dio);

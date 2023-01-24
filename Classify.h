@@ -6,6 +6,9 @@
 #define EX4_CLASSIFY_H
 #include "Command.h"
 
+/**
+ * This class represents command 3 - to classify the vectors that in the test db.
+*/
 class Classify: public Command {
 public:
     explicit Classify(DefaultIO* dio);

@@ -6,28 +6,51 @@
 #include <map>
 using namespace std;
 
+/**
+ * Default constructor.
+*/
 AlgorithmKnn::AlgorithmKnn() = default;
 
+/**
+ @return the train db.
+*/
 DB *AlgorithmKnn::getTrain() {
     return &train;
 }
 
+/**
+ @return the test db.
+*/
 DB *AlgorithmKnn::getTest() {
     return &test;
 }
 
+/**
+ @return the K parameter.
+*/
 int  AlgorithmKnn::getK() {
     return K;
 }
 
+/**
+ @return the distance metric that been used by the algorithm.
+*/
 string AlgorithmKnn::getDistanceFunc() {
     return distanceFunc;
 }
 
+/**
+ * Set the K parameter.
+ @param k - the new K parameter.
+*/
 void AlgorithmKnn::setK(int k) {
     this->K = k;
 }
 
+/**
+ * Set the distance metric.
+ @param distanceFunct - the new distance metric.
+*/
 void AlgorithmKnn::setDistanceFunc(string& distanceFunct) {
     distanceFunc = distanceFunct;
 }
@@ -75,12 +98,9 @@ string getClassification(const vector<Neighbor*>& closeNeigh) {
 }
 
 /**
- * The function get vector, the 'k' and key for the distance function he will use
-   and return his classification according to the database, the k and the distance
-   function of the algorithm.
+ * The function get vector and return his classification according to
+   the train db, the k and the distance function of the algorithm.
  * @param input vector from the user.
- * @param k the 'k'.
- * @param distanceFunc key to distance function.
  * @return the classification of the vector.
 */
 string AlgorithmKnn::vectorClassification(const vector<double>& input) {
@@ -95,6 +115,10 @@ string AlgorithmKnn::vectorClassification(const vector<double>& input) {
                               train.getNeighbors().begin() + K});
 }
 
+/**
+ * Classify all the vectors that in the test db according to
+   the train db, the k and the distance function of the algorithm.
+*/
 void AlgorithmKnn::classify() {
     for (auto itr : test.getNeighbors()) {
         string cla = vectorClassification(itr->getInfo());

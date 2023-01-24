@@ -7,6 +7,10 @@
 #include "Command.h"
 #include "AlgorithmKnn.h"
 
+/**
+ * This class represents command 5 - to download the classified vectors to file
+   in the client's computer.
+*/
 class Download: public Command {
 public:
     explicit Download(DefaultIO* dio);

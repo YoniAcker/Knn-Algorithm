@@ -40,6 +40,10 @@ double Neighbor::getDistance() {
     return disFromInput;
 }
 
+/**
+ * Set the typeName (classification) field to the given name.
+ * @param name string.
+*/
 void Neighbor::setTypeName(string& name) {
     typeName = name;
 }

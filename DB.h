@@ -21,7 +21,8 @@ private:
 public:
     DB();
     ~DB();
-    void uploadData(const string& file);
+    void deleteDB();
+    void addLine(string& line, bool isTrain);
     vector<Neighbor*>& getNeighbors();
     void updateDistance(const vector<double>& input, string& distanceFunc);
 };

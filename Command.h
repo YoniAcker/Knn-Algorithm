@@ -9,6 +9,9 @@
 #include "AlgorithmKnn.h"
 using namespace std;
 
+/**
+ * This class represents action that can be done on the algorithm or by him.
+*/
 class Command {
 protected:
     string description;

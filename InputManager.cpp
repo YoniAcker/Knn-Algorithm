@@ -6,7 +6,6 @@
 #include "Neighbor.h"
 #include <cstring>
 #include <stdexcept>
-#include <iostream>
 #include <vector>
 
 /**
@@ -30,8 +29,7 @@ Neighbor* InputManager::neighborCheck(const string& line) {
         info.push_back(num);
     }
     catch (invalid_argument &ia) {
-        cout << "Invalid file" << endl;
-        exit(1);
+        throw invalid_argument("invalid input");
     }
     // Continue to the next parts
     part = strtok(nullptr, ",");
@@ -46,29 +44,28 @@ Neighbor* InputManager::neighborCheck(const string& line) {
             if (!strtok(nullptr, ",")) {
                 return new Neighbor(info, part);
             }
-            cout << "Invalid file" << endl;
-            exit(1);
+            throw invalid_argument("invalid input");
         }
     }
     /* If we got here then there was no classification in the input and
        therefore the file is incorrect. */
-    cout << "Invalid file" << endl;
-    exit(1);
+    throw invalid_argument("invalid input");
 }
 
 /**
  * This function gets line of input and check if it can be converted to a (unclassified)
-   vector, distance function and 'k'. if it is - return that vector and change the
-   pointers to point to the function key and 'k', otherwise exit from the program.
+   vector. if it is - return that vector and change.
  * @param line the input.
- * @param distanceFunc pointer to array of chars.
- * @param k pointer to int.
  * @return vector<double>.
 */
-vector<double> InputManager::vectorCheck(char* line, char* distanceFunc, int* k) {
+vector<double> InputManager::vectorCheck(const string& line) {
     vector<double> newVector;
+    // Convert the string line to array of chars - lineArray.
+    char lineArray[line.size() + 1];
+    strcpy(lineArray, line.c_str());
+    lineArray[line.size() + 1] = '\0';
     // Read the line part by part.
-    char* part = strtok(line, " ");
+    char* part = strtok(lineArray, " ");
     // Check if the first part is a number.
     try {
         double num = stod(part);
@@ -89,29 +86,8 @@ vector<double> InputManager::vectorCheck(char* line, char* distanceFunc, int* k)
         }
         // If it's not then we are done with the vector.
         catch (invalid_argument &ia) {
-            break;
+            throw invalid_argument("invalid input");
         }
-    }
-    // Check if there is key to function.
-    if (part == nullptr) {
-        throw invalid_argument("invalid input");
-    }
-    // Check if the function key is in the correct size.
-    if (strlen(part) != 3) {
-        throw invalid_argument("invalid input");
-    }
-    strncpy(distanceFunc, part, 3);
-    part = strtok(nullptr, " ");
-    // Check if there is k.
-    if (part == nullptr) {
-        throw invalid_argument("invalid input");
-    }
-    // Check if the k is valid.
-    try {
-        *k = stoi(part);
-    }
-    catch(invalid_argument& ia) {
-        throw invalid_argument("invalid input");
     }
     return newVector;
 }
