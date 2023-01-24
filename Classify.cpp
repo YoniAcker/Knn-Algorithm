@@ -4,15 +4,33 @@
 
 #include "Classify.h"
 
+/**
+ * Constructor.
+ @param dio the io system to use.
+*/
 Classify::Classify(DefaultIO *dio): Command(dio) {
     description = "classify data";
 }
 
+/**
+ * Execute the command on the given algorithm.
+ @param algorithmKnn the algorithm.
+*/
 void Classify::execute(AlgorithmKnn& algorithmKnn) {
     if (algorithmKnn.getTrain()->getNeighbors().empty()) {
-        dio->write("please upload data");
+        try {
+            dio->write("please upload data");
+        }
+        catch (invalid_argument& ia) {
+            cout << "error sending message" << endl;
+        }
         return;
     }
     algorithmKnn.classify();
-    dio->write("classifying data complete");
+    try {
+        dio->write("classifying data complete");
+    }
+    catch (invalid_argument& ia) {
+        cout << "error sending message" << endl;
+    }
 }

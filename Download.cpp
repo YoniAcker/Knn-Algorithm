@@ -3,17 +3,36 @@
 //
 
 #include "Download.h"
+
+/**
+ * Constructor.
+ @param dio the io system to use.
+*/
 Download::Download(DefaultIO* dio): Command(dio) {
     description = "download results";
 }
 
+/**
+ * Execute the command on the given algorithm.
+ @param algorithmKnn the algorithm.
+*/
 void Download::execute(AlgorithmKnn &algorithmKnn) {
     if (algorithmKnn.getTest()->getNeighbors().empty()) {
-        dio->write("please upload data");
+        try {
+            dio->write("please upload data");
+        }
+        catch (invalid_argument& ia) {
+            cout << "error sending message" << endl;
+        }
         return;
     }
     if (algorithmKnn.getTest()->getNeighbors().front()->getTypeName().empty()) {
-        dio->write("please classify the data");
+        try {
+            dio->write("please classify the data");
+        }
+        catch (invalid_argument& ia) {
+            cout << "error sending message" << endl;
+        }
         return;
     }
     int i = 1;
@@ -21,7 +40,18 @@ void Download::execute(AlgorithmKnn &algorithmKnn) {
         string line = to_string(i);
         line += "   ";
         line += itr->getTypeName();
-        dio->write(line);
+        try {
+            dio->write(line);
+        }
+        catch (invalid_argument& ia) {
+            cout << "error sending message" << endl;
+            return;
+        }
     }
-    dio->write("Done.");
+    try {
+        dio->write("Done.");
+    }
+    catch (invalid_argument& ia) {
+        cout << "error sending message" << endl;
+    }
 }
