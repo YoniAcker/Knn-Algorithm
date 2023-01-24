@@ -7,6 +7,9 @@
 #include <string>
 using namespace std;
 
+/**
+ * This class represents IO system.
+*/
 class DefaultIO {
 public:
     virtual string read() = 0;

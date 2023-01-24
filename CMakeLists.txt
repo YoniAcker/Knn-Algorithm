@@ -16,4 +16,4 @@ add_executable(Ex4
         InputManager.h
         Neighbor.cpp
         Neighbor.h
-        DefaultIO.h StandardIO.cpp StandardIO.h Command.h Command.cpp CLI.cpp CLI.h Update.cpp Update.h Change.cpp Change.h Classify.cpp Classify.h Display.cpp Display.h Download.cpp Download.h main.cpp)
+        DefaultIO.h StandardIO.cpp StandardIO.h Command.h Command.cpp CLI.cpp CLI.h Update.cpp Update.h Change.cpp Change.h Classify.cpp Classify.h Display.cpp Display.h Download.cpp Download.h main.cpp SocketIO.cpp SocketIO.h)

@@ -12,6 +12,9 @@
 #include "Display.h"
 #include "Download.h"
 
+/**
+ * This class responsible on all the contact with the user.
+*/
 class CLI {
 private:
     DefaultIO* dio;

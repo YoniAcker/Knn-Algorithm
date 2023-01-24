@@ -4,37 +4,90 @@
 
 #include "Update.h"
 
+/**
+ * Constructor.
+ @param dio the io system to use.
+*/
 Update::Update(DefaultIO *dio): Command(dio) {
     description = "upload an unclassified csv data file";
 }
 
+/**
+ * Execute the command on the given algorithm.
+ @param algorithmKnn the algorithm.
+*/
 void Update::execute(AlgorithmKnn &algorithmKnn) {
     if (!algorithmKnn.getTrain()->getNeighbors().empty()) {
         algorithmKnn.getTrain()->deleteDB();
         algorithmKnn.getTest()->deleteDB();
     }
-    string line = dio->read();
+    string line;
+    try {
+        line = dio->read();
+    }
+    catch (invalid_argument& ia) {
+        cout << "error getting message" << endl;
+        return;
+    }
     while (line != "Upload complete.") {
         try {
             algorithmKnn.getTrain()->addLine(line, false);
         }
         catch (invalid_argument& ia) {
-            dio->write("invalid file");
+            try {
+                dio->write("invalid file");
+            }
+            catch (invalid_argument& ia) {
+                cout << "error sending message" << endl;
+            }
             return;
         }
+        try {
+            line = dio->read();
+        }
+        catch (invalid_argument& ia) {
+            cout << "error getting message" << endl;
+            return;
+        }
+    }
+    try {
+        dio->write(line);
+    }
+    catch (invalid_argument& ia) {
+        cout << "error sending message" << endl;
+    }
+    try {
         line = dio->read();
     }
-    dio->write(line);
-    line = dio->read();
+    catch (invalid_argument& ia) {
+        cout << "error getting message" << endl;
+        return;
+    }
     while (line != "Upload complete.") {
         try {
             algorithmKnn.getTest()->addLine(line, true);
         }
         catch (invalid_argument& ia) {
-            dio->write("invalid file");
+            try {
+                dio->write("invalid file");
+            }
+            catch (invalid_argument& ia) {
+                cout << "error sending message" << endl;
+            }
             return;
         }
-        line = dio->read();
+        try {
+            line = dio->read();
+        }
+        catch (invalid_argument& ia) {
+            cout << "error getting message" << endl;
+            return;
+        }
     }
-    dio->write(line);
+    try {
+        dio->write(line);
+    }
+    catch (invalid_argument& ia) {
+        cout << "error sending message" << endl;
+    }
 }
