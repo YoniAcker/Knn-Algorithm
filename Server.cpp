@@ -12,7 +12,36 @@
 #include <unistd.h>
 #include "CLI.h"
 #include "SocketIO.h"
+#include <thread>
 using namespace std;
+
+void handle_client(int client_sock) {
+        SocketIO sio(client_sock);
+        CLI cli(&sio);
+        cli.start();
+    close(client_sock);
+}
+
+/***
+ int main() {
+    int server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    sockaddr_in server_address;
+    server_address.sin_family = AF_INET;
+    server_address.sin_port = htons(8080);
+    server_address.sin_addr.s_addr = INADDR_ANY;
+    bind(server_fd, (sockaddr*) &server_address, sizeof(server_address));
+    listen(server_fd, 5);
+    while (true) {
+        sockaddr_in client_address;
+        socklen_t client_len = sizeof(client_address);
+        int client_fd = accept(server_fd, (sockaddr*) &client_address, &client_len);
+        thread client_thread(handle_client, client_fd);
+        client_thread.detach();
+    }
+    return 0;
+}
+*/
+
 
 /**
  * The main function of the server. Get the file name to make the db from the command line,
@@ -78,27 +107,15 @@ int main(int argc, char *argv[]) {
     unsigned int addr_len = sizeof(client_sin);
     
 
-    //SocketIO socketIO(sock);
-    
-   // CLI myCLI(&socketIO);
-
-    
-    // Infinity loop for never end listening.
     while (true) {
-
-
-        printf("Accept client connection\n");
-        // Accept client connection.
+        sockaddr_in client_address;
+        socklen_t client_len = sizeof(client_address);
         int client_sock = accept(sock, (struct sockaddr *) &client_sin, &addr_len);
-        if (client_sock < 0) {
-            cout << "error accepting client" << endl;
-            exit(1);
-        }
-        printf("yay! new client!\n");
-        SocketIO sio(client_sock);
-        CLI cli(&sio);
-        cli.start();
+        thread client_thread(handle_client, client_sock);
+        client_thread.detach();
     }
+
+
     // If true ever been false...
     close(sock);
     return 0;
