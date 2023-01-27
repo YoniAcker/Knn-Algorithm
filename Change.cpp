@@ -46,6 +46,7 @@ void Change::execute(AlgorithmKnn& algorithmKnn) {
         char* part = strtok(charLine, " ");
         try {
             k = stoi(part);
+            dio->write("V")
         }
         catch (invalid_argument& ia) {
             try {
@@ -68,12 +69,13 @@ void Change::execute(AlgorithmKnn& algorithmKnn) {
                 return;
             }
             isValid = false;
+        } else {
+            dio->write("V");
         }
         if (isValid) {
             distanceFunc = part;
             algorithmKnn.setK(k);
             algorithmKnn.setDistanceFunc(distanceFunc);
-            cout<<"now the k is: "<<k<<endl;
         }
     }
 }

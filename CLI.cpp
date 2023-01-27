@@ -3,7 +3,7 @@
 //
 
 #include "CLI.h"
-
+#include <thread>
 /**
  * Constructor. Add all the commands to the array.
  @param dio the io system to use.
@@ -35,6 +35,8 @@ void CLI::printMenu() {
         start();
     }
 }
+
+
 
 /**
  * Start the contact with the user.
@@ -68,6 +70,7 @@ void CLI::start() {
             start();
         }
     }
+    // if choise == 8 so need to exit
     while (choice != 8) {
         if (choice < 1 || choice > 8 || choice == 6 || choice == 7) {
             try {
@@ -79,7 +82,9 @@ void CLI::start() {
                 start();
             }
         }
-        commands[choice - 1]->execute(algorithmKnn);
+
+            commands[choice - 1]->execute(algorithmKnn);
+
         try {
             printMenu();
         }
@@ -89,4 +94,5 @@ void CLI::start() {
         }
         choice = stoi(dio->read());
     }
+
 }

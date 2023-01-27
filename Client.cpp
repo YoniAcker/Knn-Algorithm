@@ -16,8 +16,12 @@
 #include "SocketIO.h"
 #include <fstream>
 #include "DistanceFuncManager.h"
-using namespace std;
+#include <thread>
 
+using namespace std;
+/**
+ * this func read from the buffer the server answer.
+*/
 int readFromServer(char* buffer, int sock) {
     int i;
     for (i = 0; i < 4096;i++){
@@ -36,7 +40,9 @@ int readFromServer(char* buffer, int sock) {
     }
     return 1;
 }
-
+/**
+ * this func send by the buffer to the server the answer.
+*/
 int sendToServer(char* buffer, int sock, string message) {
     int i;
     for (i = 0; i < 4096;i++){
@@ -53,6 +59,40 @@ int sendToServer(char* buffer, int sock, string message) {
     }
     return 1;
 }
+
+/**
+ * in order to send this function to a thread in choice 5.
+*/
+void downloadFile(char* buffer, int sock, string file, int result){
+            ofstream writeStream(file);
+            if (!writeStream.is_open()) {
+                cout << "Could not open the file" << endl;
+                sendToServer(buffer, sock, "start");
+                result = 1;
+                return;
+            }
+            sendToServer(buffer, sock, "V");
+
+            if (!readFromServer(buffer, sock)) {
+                result = 0;
+                return;
+            }
+            while(strcmp(buffer, "Done.\n")) {
+                writeStream << buffer;
+                if(!sendToServer(buffer, sock, "V")) {
+                    result = 0;
+                    return; 
+                }
+                if (!readFromServer(buffer, sock)) {
+                    result = 0;
+                    return;
+                }
+            }
+            writeStream.close();
+    result = 1;
+    return;
+}
+
 /**
  * The main function of the client. Get the port number and the ip that the server listen at
    from the command line. Get vectors and other information from the user and send it to the
@@ -192,21 +232,18 @@ int main (int argc, char *argv[]) {
             }
             cout << buffer;
             getline(cin, line);
+            sendToServer(buffer, sock, line);
             if (line.empty()){
-                sendToServer(buffer, sock, line);
                 continue;
             }
-
-            sendToServer(buffer, sock, line);
             readFromServer(buffer, sock);
-            cout<<"read now the buffer: "<<buffer;
-            flag = true;
-            if (strcmp(buffer, "invalid value for metric") || strcmp(buffer, "invalid value for K")){
-                cout<<"valid :)"<<endl;
-                flag =false;
+            if (strcmp(buffer, "V") {
+                cout << buffer;
             }
-            cout<<buffer;
-
+            readFromServer(buffer, sock);
+            if (strcmp(buffer, "V") {
+                cout << buffer;
+            }
             continue;
         }
         if (line == "3") {
@@ -250,28 +287,15 @@ int main (int argc, char *argv[]) {
                 cout << buffer;
                 continue;
             }
-            cout << "Please enter path to the file" << endl;
+
+
+            // get the file in "line":
             getline(cin, line);
-            ofstream writeStream(line);
-            if (!writeStream.is_open()) {
-                cout << "Could not open the file" << endl;
-                sendToServer(buffer, sock, "start");
-                continue;
-            }
-            sendToServer(buffer, sock, "V");
-            if (!readFromServer(buffer, sock)) {
-                break;
-            }
-            while(strcmp(buffer, "Done.\n")) {
-                writeStream << buffer;
-                if(!sendToServer(buffer, sock, "V")) {
-                    break;
-                }
-                if (!readFromServer(buffer, sock)) {
-                    break;
-                }
-            }
-            writeStream.close();
+            int result;
+            thread myThread(downloadFile, buffer, sock, line, result);
+            // here was the func!
+            myThread.join();
+
             continue;
         }
         if (line == "8") {
