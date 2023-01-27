@@ -20,6 +20,7 @@ public:
     explicit Command(DefaultIO* dio);
     string getDescription();
     virtual void execute(AlgorithmKnn& algorithmKnn) = 0;
+    virtual ~Command() = default;
 };
 
 

@@ -10,6 +10,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include "CLI.h"
+#include "SocketIO.h"
 using namespace std;
 
 /**
@@ -21,14 +23,17 @@ using namespace std;
 */
 int main(int argc, char *argv[]) {
     // Make the db.
-    DB db(argv[1]);
+
+   // DB db(argv[1]);
     // Make the algorithm.
-    AlgorithmKnn algorithmKnn(&db);
+    // AlgorithmKnn algorithmKnn(&db);
+
     // Check if the port number is valid.
     int portNum;
     try {
-        portNum = stoi(argv[2]);
+        portNum = stoi(argv[1]);
     }
+
     catch (invalid_argument& ia) {
         cout << "Invalid port number" << endl;
         exit(1);
@@ -44,65 +49,55 @@ int main(int argc, char *argv[]) {
         cout << "error creating socket" << endl;
         exit(1);
     }
+
     struct sockaddr_in sin;
     memset(&sin, 0, sizeof(sin));
     sin.sin_family = AF_INET;
     sin.sin_addr.s_addr = INADDR_ANY;
     sin.sin_port = htons(server_port);
+    
+    
     // Bind the socket to the port.
     if (bind(sock, (struct sockaddr*) &sin, sizeof(sin)) < 0){
         cout << "error binding socket" << endl;
         exit(1);
     }
+
+    printf("hi! you are in the server\n");
+    printf("wait, listen in the port:)\n");
     // Make the server listen in the port.
     if (listen(sock, 5) < 0) {
         cout << "error listening to a socket" << endl;
         exit(1);
     }
+
+    printf("lissening to the port sucssesfuly! :)\n");
+    
+    
     struct sockaddr_in client_sin;
     unsigned int addr_len = sizeof(client_sin);
+    
+
+    //SocketIO socketIO(sock);
+    
+   // CLI myCLI(&socketIO);
+
+    
     // Infinity loop for never end listening.
     while (true) {
+
+
+        printf("Accept client connection\n");
         // Accept client connection.
         int client_sock = accept(sock, (struct sockaddr *) &client_sin, &addr_len);
         if (client_sock < 0) {
             cout << "error accepting client" << endl;
             exit(1);
         }
-        char buffer[4096];
-        int expected_data_len = sizeof(buffer);
-        string answer;
-        int k;
-        char distanceFunc[4];
-        vector<double> input;
-        // Get data from the client.
-        int read_bytes = recv(client_sock, buffer, expected_data_len, 0);
-        // Get new information until the client end the connection.
-        while (read_bytes != 0) {
-            if (read_bytes < 0) {
-                cout << "error getting message" << endl;
-                read_bytes = recv(client_sock, buffer, expected_data_len, 0);
-                continue;
-            }
-            // Check if the input valid.
-            try {
-                input = InputManager::vectorCheck(buffer, distanceFunc, &k);
-                answer = algorithmKnn.vectorClassification(input, distanceFunc, k);
-            }
-            catch (invalid_argument& ia) {
-                answer = "invalid input\n";
-            }
-            // Copy the answer to char array.
-            strncpy(buffer, answer.data(), answer.size());
-            // Send the answer to the client.
-            int sent_bytes = send(client_sock, buffer, read_bytes, 0);
-            if (sent_bytes < 0) {
-                cout << "error sending message" << endl;
-            }
-            read_bytes = recv(client_sock, buffer, expected_data_len, 0);
-        }
-        // Delete the input vector.
-        vector<double>().swap(input);
+        printf("yay! new client!\n");
+        SocketIO sio(client_sock);
+        CLI cli(&sio);
+        cli.start();
     }
     // If true ever been false...
     close(sock);

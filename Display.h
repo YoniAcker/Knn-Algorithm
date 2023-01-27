@@ -6,6 +6,7 @@
 #define EX4_DISPLAY_H
 #include "Command.h"
 #include "AlgorithmKnn.h"
+#include "DefaultIO.h"
 
 /**
  * This class represents command 4 - to display the classified vectors
@@ -13,7 +14,9 @@
 */
 class Display: public Command {
 public:
+
     explicit Display(DefaultIO* dio);
+   // ~Display() = default;
     void execute(AlgorithmKnn& algorithmKnn) override;
 };
 

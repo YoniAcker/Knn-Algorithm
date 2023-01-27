@@ -12,12 +12,14 @@ Display::Display(DefaultIO *dio): Command(dio) {
     description = "display results";
 }
 
+
+
 /**
  * Execute the command on the given algorithm.
  @param algorithmKnn the algorithm.
 */
 void Display::execute(AlgorithmKnn& algorithmKnn) {
-    if (algorithmKnn.getTest()->getNeighbors().empty()) {
+   if (algorithmKnn.getTest()->getNeighbors().empty()) {
         try {
             dio->write("please upload data");
         }
@@ -35,6 +37,15 @@ void Display::execute(AlgorithmKnn& algorithmKnn) {
         }
         return;
     }
+    try {
+        dio->write("V");
+    }
+    catch (invalid_argument& ia) {
+        cout << "error sending message" << endl;
+    }
+    if (dio->read() == "start") {
+        return;
+    }
     int i = 1;
     for (auto& itr : algorithmKnn.getTest()->getNeighbors()) {
         string line = to_string(i);
@@ -47,6 +58,8 @@ void Display::execute(AlgorithmKnn& algorithmKnn) {
             cout << "error sending message" << endl;
             return;
         }
+        i++;
+        dio->read();
     }
     try {
         dio->write("Done.");

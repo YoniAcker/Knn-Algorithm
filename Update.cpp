@@ -21,6 +21,21 @@ void Update::execute(AlgorithmKnn &algorithmKnn) {
         algorithmKnn.getTrain()->deleteDB();
         algorithmKnn.getTest()->deleteDB();
     }
+    try {
+        dio->write("Please upload your local train CSV file.");
+    }
+    catch (invalid_argument& ia) {
+        cout << "error sending message" << endl;
+        return;
+    }
+    try {
+        if(dio->read() == "start") {
+            return;
+        }
+    }
+    catch (invalid_argument& ia) {
+        cout << "error getting message" << endl;
+    }
     string line;
     try {
         line = dio->read();
@@ -31,7 +46,7 @@ void Update::execute(AlgorithmKnn &algorithmKnn) {
     }
     while (line != "Upload complete.") {
         try {
-            algorithmKnn.getTrain()->addLine(line, false);
+            algorithmKnn.getTrain()->addLine(line, true);
         }
         catch (invalid_argument& ia) {
             try {
@@ -40,6 +55,13 @@ void Update::execute(AlgorithmKnn &algorithmKnn) {
             catch (invalid_argument& ia) {
                 cout << "error sending message" << endl;
             }
+            return;
+        }
+        try {
+            dio->write("V");
+        }
+        catch (invalid_argument& ia) {
+            cout << "error sending message" << endl;
             return;
         }
         try {
@@ -57,6 +79,16 @@ void Update::execute(AlgorithmKnn &algorithmKnn) {
         cout << "error sending message" << endl;
     }
     try {
+        dio->write("Please upload your local test CSV file.");
+    }
+    catch (invalid_argument& ia) {
+        cout << "error sending message" << endl;
+        return;
+    }
+    if (dio->read() == "start") {
+        return;
+    }
+    try {
         line = dio->read();
     }
     catch (invalid_argument& ia) {
@@ -65,7 +97,7 @@ void Update::execute(AlgorithmKnn &algorithmKnn) {
     }
     while (line != "Upload complete.") {
         try {
-            algorithmKnn.getTest()->addLine(line, true);
+            algorithmKnn.getTest()->addLine(line, false);
         }
         catch (invalid_argument& ia) {
             try {
@@ -74,6 +106,13 @@ void Update::execute(AlgorithmKnn &algorithmKnn) {
             catch (invalid_argument& ia) {
                 cout << "error sending message" << endl;
             }
+            return;
+        }
+        try {
+            dio->write("V");
+        }
+        catch (invalid_argument& ia) {
+            cout << "error sending message" << endl;
             return;
         }
         try {

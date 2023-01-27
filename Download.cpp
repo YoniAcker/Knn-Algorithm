@@ -35,6 +35,15 @@ void Download::execute(AlgorithmKnn &algorithmKnn) {
         }
         return;
     }
+    try {
+        dio->write("V");
+    }
+    catch (invalid_argument& ia) {
+        cout << "error sending message" << endl;
+    }
+    if (dio->read() == "start") {
+        return;
+    }
     int i = 1;
     for (auto& itr : algorithmKnn.getTest()->getNeighbors()) {
         string line = to_string(i);
@@ -47,6 +56,8 @@ void Download::execute(AlgorithmKnn &algorithmKnn) {
             cout << "error sending message" << endl;
             return;
         }
+        i++;
+        dio->read();
     }
     try {
         dio->write("Done.");

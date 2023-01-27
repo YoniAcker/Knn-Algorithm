@@ -14,6 +14,7 @@ class Update: public Command {
 public:
     explicit Update(DefaultIO* dio);
     void execute(AlgorithmKnn &algorithmKnn) override;
+    
 };
 
 

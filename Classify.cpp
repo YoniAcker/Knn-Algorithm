@@ -19,7 +19,7 @@ Classify::Classify(DefaultIO *dio): Command(dio) {
 void Classify::execute(AlgorithmKnn& algorithmKnn) {
     if (algorithmKnn.getTrain()->getNeighbors().empty()) {
         try {
-            dio->write("please upload data");
+            dio->write("please upload data");    
         }
         catch (invalid_argument& ia) {
             cout << "error sending message" << endl;

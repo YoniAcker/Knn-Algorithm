@@ -13,7 +13,7 @@ class SocketIO: public DefaultIO {
 private:
     int client_sock;
     char buffer[4096] = "";
-    int expected_data_len = sizeof(buffer);
+    int expected_data_len = 4096;
 public:
     explicit SocketIO (int sock);
     string read() override;

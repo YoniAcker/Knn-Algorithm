@@ -73,6 +73,7 @@ void Change::execute(AlgorithmKnn& algorithmKnn) {
             distanceFunc = part;
             algorithmKnn.setK(k);
             algorithmKnn.setDistanceFunc(distanceFunc);
+            cout<<"now the k is: "<<k<<endl;
         }
     }
 }

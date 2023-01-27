@@ -21,20 +21,18 @@ CLI::CLI(DefaultIO *dio): update(dio), change(dio), classify(dio), display(dio),
  * Print the menu af commands to the user.
 */
 void CLI::printMenu() {
+    string menu;
     int i;
     for(i = 1;i < 6;i++) {
-        try {
-            dio->write(to_string(i) + ". " + commands[i - 1]->getDescription());
-        }
-        catch (invalid_argument& ia) {
-            throw invalid_argument("invalid input");
-        }
+        menu += to_string(i) + ". " + commands[i - 1]->getDescription() + "\n";
     }
+    menu += "8. exit";
     try {
-        dio->write("8. exit");
+        dio->write(menu);
     }
     catch (invalid_argument& ia) {
-        throw invalid_argument("invalid input");
+        cout << "error sending message" << endl;
+        start();
     }
 }
 
@@ -70,16 +68,17 @@ void CLI::start() {
             start();
         }
     }
-    if (choice < 1 || choice > 8 || choice == 6 || choice == 7) {
-        try {
-            dio->write("Invalid command");
-        }
-        catch (invalid_argument& ia) {
-            cout << "error sending message" << endl;
-            start();
-        }
-    }
     while (choice != 8) {
+        if (choice < 1 || choice > 8 || choice == 6 || choice == 7) {
+            try {
+                dio->write("Invalid command");
+                start();
+            }
+            catch (invalid_argument& ia) {
+                cout << "error sending message" << endl;
+                start();
+            }
+        }
         commands[choice - 1]->execute(algorithmKnn);
         try {
             printMenu();
