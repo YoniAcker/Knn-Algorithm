@@ -20,7 +20,7 @@ Neighbor::Neighbor(const vector<double>& info, const string& typeName) {
  * Returns a read-only copy of the information vector.
  * @return const vector<double>&.
 */
-const vector<double>& Neighbor::getInfo() {
+vector<double>& Neighbor::getInfo() {
     return info;
 }
 

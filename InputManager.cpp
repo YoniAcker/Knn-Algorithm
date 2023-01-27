@@ -18,8 +18,8 @@ Neighbor* InputManager::neighborCheck(const string& line) {
     vector<double> info;
     // Convert the string line to array of chars - lineArray.
     char lineArray[line.size() + 1];
-    strcpy(lineArray, line.c_str());
-    lineArray[line.size() + 1] = '\0';
+    strcpy(lineArray, line.data());
+    lineArray[line.size()] = '\0';
     // Get the first number of info.
     char* part = strtok(lineArray, ",");
     /* Checks that it is indeed a number (otherwise exits the program because
@@ -58,36 +58,26 @@ Neighbor* InputManager::neighborCheck(const string& line) {
  * @param line the input.
  * @return vector<double>.
 */
-vector<double> InputManager::vectorCheck(const string& line) {
+Neighbor* InputManager::vectorCheck(const string& line) {
     vector<double> newVector;
     // Convert the string line to array of chars - lineArray.
     char lineArray[line.size() + 1];
-    strcpy(lineArray, line.c_str());
-    lineArray[line.size() + 1] = '\0';
+    strcpy(lineArray, line.data());
+    lineArray[line.size()] = '\0';
     // Read the line part by part.
-    char* part = strtok(lineArray, " ");
-    // Check if the first part is a number.
-    try {
-        double num = stod(part);
-        newVector.push_back(num);
-        part = strtok(nullptr, " ");
-    }
-    // If not, we get an empty vector and therefore throw exception.
-    catch (invalid_argument &ia) {
-        throw invalid_argument("invalid input");
-    }
+    char* part = strtok(lineArray, ",");
     // Get all the numbers of the vector.
     while (part != nullptr) {
         // Checks that it is a number.
         try {
             double num = stod(part);
             newVector.push_back(num);
-            part = strtok(nullptr, " ");
+            part = strtok(nullptr, ",");
         }
         // If it's not then we are done with the vector.
         catch (invalid_argument &ia) {
             throw invalid_argument("invalid input");
         }
     }
-    return newVector;
+    return new Neighbor(newVector, "");
 }

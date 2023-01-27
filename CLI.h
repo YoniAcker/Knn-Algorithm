@@ -28,6 +28,7 @@ private:
     void printMenu();
 public:
     explicit CLI(DefaultIO* dio);
+    //~CLI();
     void start();
 };
 

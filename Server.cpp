@@ -10,7 +10,38 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include "CLI.h"
+#include "SocketIO.h"
+#include <thread>
 using namespace std;
+
+void handle_client(int client_sock) {
+        SocketIO sio(client_sock);
+        CLI cli(&sio);
+        cli.start();
+    close(client_sock);
+}
+
+/***
+ int main() {
+    int server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    sockaddr_in server_address;
+    server_address.sin_family = AF_INET;
+    server_address.sin_port = htons(8080);
+    server_address.sin_addr.s_addr = INADDR_ANY;
+    bind(server_fd, (sockaddr*) &server_address, sizeof(server_address));
+    listen(server_fd, 5);
+    while (true) {
+        sockaddr_in client_address;
+        socklen_t client_len = sizeof(client_address);
+        int client_fd = accept(server_fd, (sockaddr*) &client_address, &client_len);
+        thread client_thread(handle_client, client_fd);
+        client_thread.detach();
+    }
+    return 0;
+}
+*/
+
 
 /**
  * The main function of the server. Get the file name to make the db from the command line,
@@ -21,14 +52,17 @@ using namespace std;
 */
 int main(int argc, char *argv[]) {
     // Make the db.
-    DB db(argv[1]);
+
+   // DB db(argv[1]);
     // Make the algorithm.
-    AlgorithmKnn algorithmKnn(&db);
+    // AlgorithmKnn algorithmKnn(&db);
+
     // Check if the port number is valid.
     int portNum;
     try {
-        portNum = stoi(argv[2]);
+        portNum = stoi(argv[1]);
     }
+
     catch (invalid_argument& ia) {
         cout << "Invalid port number" << endl;
         exit(1);
@@ -44,66 +78,44 @@ int main(int argc, char *argv[]) {
         cout << "error creating socket" << endl;
         exit(1);
     }
+
     struct sockaddr_in sin;
     memset(&sin, 0, sizeof(sin));
     sin.sin_family = AF_INET;
     sin.sin_addr.s_addr = INADDR_ANY;
     sin.sin_port = htons(server_port);
+    
+    
     // Bind the socket to the port.
     if (bind(sock, (struct sockaddr*) &sin, sizeof(sin)) < 0){
         cout << "error binding socket" << endl;
         exit(1);
     }
+
+    printf("hi! you are in the server\n");
+    printf("wait, listen in the port:)\n");
     // Make the server listen in the port.
     if (listen(sock, 5) < 0) {
         cout << "error listening to a socket" << endl;
         exit(1);
     }
+
+    printf("lissening to the port sucssesfuly! :)\n");
+    
+    
     struct sockaddr_in client_sin;
     unsigned int addr_len = sizeof(client_sin);
-    // Infinity loop for never end listening.
+    
+
     while (true) {
-        // Accept client connection.
+        sockaddr_in client_address;
+        socklen_t client_len = sizeof(client_address);
         int client_sock = accept(sock, (struct sockaddr *) &client_sin, &addr_len);
-        if (client_sock < 0) {
-            cout << "error accepting client" << endl;
-            exit(1);
-        }
-        char buffer[4096];
-        int expected_data_len = sizeof(buffer);
-        string answer;
-        int k;
-        char distanceFunc[4];
-        vector<double> input;
-        // Get data from the client.
-        int read_bytes = recv(client_sock, buffer, expected_data_len, 0);
-        // Get new information until the client end the connection.
-        while (read_bytes != 0) {
-            if (read_bytes < 0) {
-                cout << "error getting message" << endl;
-                read_bytes = recv(client_sock, buffer, expected_data_len, 0);
-                continue;
-            }
-            // Check if the input valid.
-            try {
-                input = InputManager::vectorCheck(buffer, distanceFunc, &k);
-                answer = algorithmKnn.vectorClassification(input, distanceFunc, k);
-            }
-            catch (invalid_argument& ia) {
-                answer = "invalid input\n";
-            }
-            // Copy the answer to char array.
-            strncpy(buffer, answer.data(), answer.size());
-            // Send the answer to the client.
-            int sent_bytes = send(client_sock, buffer, read_bytes, 0);
-            if (sent_bytes < 0) {
-                cout << "error sending message" << endl;
-            }
-            read_bytes = recv(client_sock, buffer, expected_data_len, 0);
-        }
-        // Delete the input vector.
-        vector<double>().swap(input);
+        thread client_thread(handle_client, client_sock);
+        client_thread.detach();
     }
+
+
     // If true ever been false...
     close(sock);
     return 0;

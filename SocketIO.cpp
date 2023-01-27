@@ -5,6 +5,7 @@
 #include "SocketIO.h"
 #include <stdexcept>
 #include <sys/socket.h>
+#include <cstring>
 
 /**
  * Constructor.
@@ -19,7 +20,11 @@ SocketIO::SocketIO(int sock) {
  @return line of input.
 */
 string SocketIO::read() {
-    int read_bytes = recv(client_sock, buffer, expected_data_len, 0);
+    int i;
+    for(i = 0; i<4000; i++){
+        buffer[i]=0;
+    }    
+    int read_bytes = recv(client_sock, buffer, expected_data_len,0);
     if (read_bytes < 0) {
         throw invalid_argument("invalid input");
     }
@@ -32,8 +37,14 @@ string SocketIO::read() {
 */
 void SocketIO::write(string line) {
     line += "\n";
+    int i;
+    for(i = 0; i<4000; i++){
+        buffer[i]=0;
+    }
+    strcpy(buffer,line.data());
     int sent_bytes = send(client_sock, buffer, expected_data_len, 0);
     if (sent_bytes < 0) {
         throw invalid_argument("invalid input");
     }
 }
+
