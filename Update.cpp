@@ -78,6 +78,9 @@ void Update::execute(AlgorithmKnn &algorithmKnn) {
     catch (invalid_argument& ia) {
         cout << "error sending message" << endl;
     }
+    if (algorithmKnn.getK() > algorithmKnn.getTrain()->getNeighbors().size()) {
+        algorithmKnn.setK(algorithmKnn.getTrain()->getNeighbors().size());
+    }
     try {
         dio->write("Please upload your local test CSV file.");
     }
@@ -122,6 +125,15 @@ void Update::execute(AlgorithmKnn &algorithmKnn) {
             cout << "error getting message" << endl;
             return;
         }
+    }
+    if (algorithmKnn.getTrain()->getVectorSize() != algorithmKnn.getTest()->getVectorSize()) {
+        try {
+            dio->write("invalid file");
+        }
+        catch (invalid_argument& ia) {
+            cout << "error sending message" << endl;
+        }
+        return;
     }
     try {
         dio->write(line);

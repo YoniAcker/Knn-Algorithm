@@ -46,7 +46,14 @@ void Change::execute(AlgorithmKnn& algorithmKnn) {
         char* part = strtok(charLine, " ");
         try {
             k = stoi(part);
-            dio->write("V")
+            if (!algorithmKnn.getTrain()->getNeighbors().empty() &&
+                            k > algorithmKnn.getTrain()->getNeighbors().size()) {
+                dio->write("K is too big");
+                return;
+            }
+            else {
+                dio->write("V");
+            }
         }
         catch (invalid_argument& ia) {
             try {

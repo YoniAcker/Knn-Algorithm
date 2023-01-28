@@ -134,17 +134,13 @@ int main (int argc, char *argv[]) {
         exit(1);
     }
     char buffer[4096];
-    bool flag = true;
 
     while (true) {
         // read the massage from the server:
-        if (flag){
-            if (!readFromServer(buffer, sock)) {
-                break;
-            }
-        cout << buffer;
+        if (!readFromServer(buffer, sock)) {
+             break;
         }
-        flag = true;
+        cout << buffer;
         string line;
         getline(cin, line);
         while (line.empty()){
@@ -153,7 +149,15 @@ int main (int argc, char *argv[]) {
         if (!sendToServer(buffer, sock, line)) {
             break;
         }
-
+        if (line == "8") {
+            break;
+        }
+        if (!readFromServer(buffer, sock)) {
+             break;
+        }
+        if(strcmp(buffer, "V\n")) {
+            cout << buffer;
+        }
         if (line == "1") {
             if (!readFromServer(buffer, sock)) {
                 break;
@@ -181,7 +185,8 @@ int main (int argc, char *argv[]) {
                 }
             }
             if (!strcmp(buffer, "invalid file\n")) {
-                break;
+                cout << buffer;
+                continue;
             }
             if (!sendToServer(buffer, sock, "Upload complete.")) {
                 break;
@@ -201,6 +206,7 @@ int main (int argc, char *argv[]) {
             if (!readStreamTest.is_open()) {
                 cout << "Could not open the file" << endl;
                 sendToServer(buffer, sock, "start");
+                continue;
             }
             sendToServer(buffer, sock, "V");
             // Read the file line by line.
@@ -214,6 +220,10 @@ int main (int argc, char *argv[]) {
                 if (!strcmp(buffer, "invalid file\n")) {
                     break;
                 }
+            }
+            if (!strcmp(buffer, "invalid file\n")) {
+                cout << buffer;
+                continue;
             }
             if (!sendToServer(buffer, sock, "Upload complete.")) {
                 break;
@@ -237,11 +247,7 @@ int main (int argc, char *argv[]) {
                 continue;
             }
             readFromServer(buffer, sock);
-            if (strcmp(buffer, "V") {
-                cout << buffer;
-            }
-            readFromServer(buffer, sock);
-            if (strcmp(buffer, "V") {
+            if (strcmp(buffer, "V\n")) {
                 cout << buffer;
             }
             continue;
@@ -287,19 +293,13 @@ int main (int argc, char *argv[]) {
                 cout << buffer;
                 continue;
             }
-
-
             // get the file in "line":
             getline(cin, line);
             int result;
             thread myThread(downloadFile, buffer, sock, line, result);
             // here was the func!
             myThread.join();
-
             continue;
-        }
-        if (line == "8") {
-            break;
         }
     }
     close(sock);

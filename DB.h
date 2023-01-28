@@ -21,6 +21,7 @@ private:
 public:
     DB();
     ~DB();
+    int getVectorSize();
     void deleteDB();
     void addLine(string& line, bool isTrain);
     vector<Neighbor*>& getNeighbors();

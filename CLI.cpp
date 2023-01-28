@@ -64,6 +64,7 @@ void CLI::start() {
     catch (invalid_argument& ia) {
         try {
             dio->write("Invalid command");
+            start();
         }
         catch (invalid_argument& ia) {
             cout << "error sending message" << endl;
@@ -82,9 +83,14 @@ void CLI::start() {
                 start();
             }
         }
-
-            commands[choice - 1]->execute(algorithmKnn);
-
+        try {
+                dio->write("V");
+            }
+        catch (invalid_argument& ia) {
+            cout << "error sending message" << endl;
+            start();
+        }
+        commands[choice - 1]->execute(algorithmKnn);
         try {
             printMenu();
         }
@@ -94,5 +100,4 @@ void CLI::start() {
         }
         choice = stoi(dio->read());
     }
-
 }

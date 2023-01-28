@@ -5,7 +5,6 @@
 #include "DB.h"
 #include "DistanceFuncManager.h"
 #include <fstream>
-#include <iostream>
 
 /**
  * Default constructor.
@@ -23,6 +22,14 @@ void DB::deleteDB() {
     }
     // Delete the vector.
     vector<Neighbor*>().swap(neighbors);
+}
+
+/**
+ * Return the size of the vectors in the DB.
+ @return vector size.
+*/
+int DB::getVectorSize() {
+    return vectorSize;
 }
 
 /**
