@@ -1,9 +1,7 @@
-# Ex4
-We submitted the project on Shabbat evening because we had 5 days of grace left, and they said at the beginning of the year that Shabbat does not count (the last day of grace was on Friday, and we had Shabbat left).
+# KNN-Application
+In this project we imlement the KNN algorithm for classifying in server-client pattern. The client sends to the network CSV files of classified vectors, and then files of unclassified vectors. The server classifies these vectors according to the KNN algorithm which takes the K vectors closest to the unclassified vector. After the classification, the customer can download the file with the classified vectors to his computer.
 
-In this project we created a client-server lie. The client sends to the network CSV files of classified vectors, and then files of unclassified vectors. The server classifies these vectors according to the KNN algorithm which takes the K vectors closest to the unclassified vector. After the classification, the customer can download the file with the classified vectors to his computer.
-
-We worked with THREAD on the server and the client. on the server, so that it can handle two clients at the same time. And the client, so that when he downloads the file, he can at the same time continue to communicate with the server.
+We worked with threads on the server and the client. on the server, so that it can handle two clients at the same time. And the client, so that when he downloads the file, he can at the same time continue to communicate with the server.
 
 When the client enters "1" he is asked to upload the file with the classified vectors, followed by the unclassified vectors. In case the size of the vectors in the second file are not the same size as the second file, he will receive an error that the file is not correct.
 
